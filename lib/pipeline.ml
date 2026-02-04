@@ -166,13 +166,12 @@ let with_user u t =
 
 (** {1 Response Formatting} *)
 
-(** Enable JSON object response mode *)
-let json_mode t =
-  { t with response_format = Some Common.Json_object_format }
-
-(** Set JSON schema for structured output *)
-let json_schema ~name ?strict schema t =
+(** Enable JSON mode with a schema for structured output *)
+let json_mode ~name ?strict schema t =
   { t with response_format = Some (Common.Json_schema_format { name; schema; strict }) }
+
+(** Alias for json_mode *)
+let json_schema = json_mode
 
 (** Set text response format *)
 let text_format t =

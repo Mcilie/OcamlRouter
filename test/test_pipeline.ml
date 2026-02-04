@@ -72,13 +72,22 @@ let test_pipeline_json_mode () =
     | None -> failwith "Please set OPENROUTER_API_KEY"
   in
 
+  let schema = `Assoc [
+    ("type", `String "object");
+    ("properties", `Assoc [
+      ("name", `Assoc [("type", `String "string")]);
+      ("age", `Assoc [("type", `String "integer")]);
+    ]);
+    ("required", `List [`String "name"; `String "age"]);
+    ("additionalProperties", `Bool false);
+  ] in
+
   (* Pipeline with JSON mode *)
   let result =
-    "Give me a JSON object with fields: name, age. Make up values."
+    "Generate a fictional person with name and age."
     |> prompt
-    |> system "Always respond with valid JSON only."
     |> model "openai/gpt-4o-mini"
-    |> json_mode
+    |> json_mode ~name:"person" ~strict:true schema
     |> max_tokens 100
     |> run ~sw ~env client
   in
@@ -88,8 +97,11 @@ let test_pipeline_json_mode () =
     (match Openrouter.Chat.get_content response with
      | Some content ->
        Printf.printf "Pipeline JSON mode: %s\n" content;
-       let _ = Yojson.Safe.from_string content in
-       print_endline "Valid JSON received!"
+       let json = Yojson.Safe.from_string content in
+       let open Yojson.Safe.Util in
+       let name = json |> member "name" |> to_string in
+       let age = json |> member "age" |> to_int in
+       Printf.printf "Parsed: name=%s, age=%d\n" name age
      | None ->
        print_endline "No content");
     print_endline "test_pipeline_json_mode: PASSED"

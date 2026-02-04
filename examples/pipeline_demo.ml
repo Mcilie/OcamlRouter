@@ -47,49 +47,31 @@ let () =
    | Some text -> Printf.printf "   %s\n\n" text
    | None -> print_endline "   (no response)");
 
-  (* Example 3: JSON mode *)
-  print_endline "3. JSON mode:";
-  let result =
-    "Generate a fictional person with name, age, and hobby"
-    |> prompt
-    |> system "Respond with valid JSON only."
-    |> model "openai/gpt-4o-mini"
-    |> json_mode
-    |> max_tokens 100
-    |> run ~sw ~env client
-  in
-  (match get_content result with
-   | Some text -> Printf.printf "   %s\n\n" text
-   | None -> print_endline "   (no response)");
-
-  (* Example 4: Structured output with JSON schema *)
-  print_endline "4. Structured output with schema:";
-  let weather_schema = `Assoc [
+  (* Example 3: JSON mode with schema *)
+  print_endline "3. JSON mode (structured output):";
+  let person_schema = `Assoc [
     ("type", `String "object");
     ("properties", `Assoc [
-      ("location", `Assoc [("type", `String "string")]);
-      ("temperature_celsius", `Assoc [("type", `String "number")]);
-      ("conditions", `Assoc [
-        ("type", `String "string");
-        ("enum", `List [`String "sunny"; `String "cloudy"; `String "rainy"; `String "snowy"])
-      ]);
+      ("name", `Assoc [("type", `String "string")]);
+      ("age", `Assoc [("type", `String "integer")]);
+      ("hobby", `Assoc [("type", `String "string")]);
     ]);
-    ("required", `List [`String "location"; `String "temperature_celsius"; `String "conditions"]);
+    ("required", `List [`String "name"; `String "age"; `String "hobby"]);
     ("additionalProperties", `Bool false);
   ] in
   let result =
-    "What's the weather like in Tokyo right now? (make up realistic values)"
+    "Generate a fictional person"
     |> prompt
     |> model "openai/gpt-4o-mini"
-    |> json_schema ~name:"weather" ~strict:true weather_schema
+    |> json_mode ~name:"person" ~strict:true person_schema
     |> run ~sw ~env client
   in
   (match get_content result with
    | Some text -> Printf.printf "   %s\n\n" text
    | None -> print_endline "   (no response)");
 
-  (* Example 5: Streaming *)
-  print_endline "5. Streaming response:";
+  (* Example 4: Streaming *)
+  print_endline "4. Streaming response:";
   print_string "   ";
   let result =
     "Count slowly from 1 to 10, with a brief pause between each number."
@@ -109,8 +91,8 @@ let () =
    | Error e ->
      Printf.eprintf "Error: %s\n" (Openrouter.Errors.to_string e));
 
-  (* Example 6: Multi-turn conversation *)
-  print_endline "\n6. Multi-turn conversation:";
+  (* Example 5: Multi-turn conversation *)
+  print_endline "\n5. Multi-turn conversation:";
   let conversation = [
     Openrouter.Message.system "You are a helpful math tutor. Be concise.";
     Openrouter.Message.user "What is the Pythagorean theorem?";
