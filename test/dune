@@ -1,0 +1,27 @@
+(test
+ (name test_openrouter)
+ (libraries openrouter alcotest))
+
+(executable
+ (name test_models)
+ (libraries openrouter eio_main))
+
+(executable
+ (name test_account)
+ (libraries openrouter eio_main))
+
+(executable
+ (name test_providers)
+ (libraries openrouter eio_main))
+
+(executable
+ (name test_completions)
+ (libraries openrouter eio_main))
+
+(executable
+ (name test_embeddings)
+ (libraries openrouter eio_main))
+
+(executable
+ (name test_chat_features)
+ (libraries openrouter eio_main yojson))

@@ -1,0 +1,129 @@
+# OpenRouter OCaml SDK - TODO
+
+## Missing Endpoints
+
+### Models
+- [x] `GET /models` - List all available models
+- [x] `GET /models/count` - Get total model count
+- [x] `GET /models/{author}/{slug}/endpoints` - List endpoints for a model
+
+### Completions
+- [x] `POST /completions` - Text completions (non-chat)
+
+### Embeddings
+- [x] `POST /embeddings` - Generate embeddings
+- [x] `GET /embeddings/models` - List embedding models
+
+### Account & Usage
+- [x] `GET /credits` - Check remaining credits
+- [x] `GET /generation` - Get generation metadata by ID
+- [ ] `GET /activity` - Analytics/usage data (requires provisioning key)
+
+### Providers
+- [x] `GET /providers` - List all providers
+
+### API Keys Management
+- [ ] `GET /keys` - List API keys
+- [ ] `POST /keys` - Create API key
+- [ ] `GET /keys/{key_id}` - Get API key details
+- [ ] `PATCH /keys/{key_id}` - Update API key
+- [ ] `POST /keys/{key_id}/disable` - Disable API key
+- [ ] `DELETE /keys/{key_id}` - Delete API key
+
+### Guardrails
+- [ ] `GET /guardrails` - List guardrails
+- [ ] `POST /guardrails` - Create guardrail
+- [ ] `GET /guardrails/{id}` - Get guardrail details
+- [ ] `PATCH /guardrails/{id}` - Update guardrail
+- [ ] `DELETE /guardrails/{id}` - Delete guardrail
+
+### OAuth
+- [ ] `POST /auth/keys` - Exchange auth code for API key (PKCE flow)
+
+---
+
+## Missing Chat Features
+
+### Content Types
+- [x] Audio content (input/output)
+- [x] Video content (input)
+- [ ] Cache control directives
+
+### Response Formatting
+- [x] JSON mode (`response_format: { type: "json_object" }`)
+- [x] JSON schema validation
+- [x] Text format option
+
+### Advanced Parameters
+- [x] `logit_bias` - Bias specific tokens
+- [x] `logprobs` - Return log probabilities
+- [x] `top_logprobs` - Number of top logprobs to return
+- [x] `modalities` - Output modalities (text, audio)
+
+### Tracking & Metadata
+- [x] `session_id` - Group related requests
+- [x] `metadata` - Custom key-value pairs per request
+
+### Other
+- [ ] Plugins support
+- [ ] Debug mode
+- [ ] Image configuration per provider
+
+---
+
+## Missing Error Types
+
+- [ ] 402 Payment Required
+- [ ] 408 Request Timeout
+- [ ] 413 Payload Too Large
+- [ ] 422 Unprocessable Entity
+- [ ] 524 Edge Network Timeout
+- [ ] 529 Provider Overloaded
+
+---
+
+## Tests
+
+- [x] Tests for models API
+- [x] Tests for completions API
+- [x] Tests for embeddings API
+- [x] Tests for credits API
+- [x] Tests for generation API
+- [x] Tests for providers API
+- [ ] Tests for API keys API
+- [ ] Tests for guardrails API
+- [x] Tests for new chat features
+- [ ] Tests for error types
+- [ ] Tests for pipeline builder
+
+---
+
+## OCaml-Idiomatic Enhancements
+
+### Composable Pipelines (Priority 1)
+- [ ] Pipeline builder module with `|>` composition
+- [ ] `Chat.prompt` - Start a pipeline from a string
+- [ ] `Chat.system` - Add system message to pipeline
+- [ ] `Chat.user` - Add user message to pipeline
+- [ ] `Chat.assistant` - Add assistant message to pipeline
+- [ ] `Chat.model` - Set model
+- [ ] `Chat.temperature` - Set temperature
+- [ ] `Chat.max_tokens` - Set max tokens
+- [ ] `Chat.tools` - Add tools
+- [ ] `Chat.json_mode` - Enable JSON response format
+- [ ] `Chat.json_schema` - Set JSON schema constraint
+- [ ] `Chat.run` - Execute pipeline (non-streaming)
+- [ ] `Chat.run_stream` - Execute pipeline (streaming)
+
+### Typed Tool System (Priority 2)
+- [ ] Tool definition as OCaml types
+- [ ] Auto-generate JSON schema from types
+- [ ] Pattern matching on tool responses
+- [ ] Compile-time handler coverage checks (GADTs)
+
+### Agent Framework (Priority 3)
+- [ ] Agent loop with automatic tool execution
+- [ ] Step-by-step execution with pattern matching
+- [ ] Customizable tool handlers
+- [ ] Conversation state management
+- [ ] Max iterations / budget controls

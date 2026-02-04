@@ -1,0 +1,5 @@
+(library
+ (name openrouter)
+ (public_name openrouter)
+ (libraries eio eio_main unix yojson ppx_yojson_conv_lib uri base64)
+ (preprocess (pps ppx_yojson_conv)))

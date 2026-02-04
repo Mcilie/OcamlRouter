@@ -1,0 +1,15 @@
+(executable
+ (name simple_chat)
+ (libraries openrouter eio_main))
+
+(executable
+ (name streaming)
+ (libraries openrouter eio_main))
+
+(executable
+ (name tool_use)
+ (libraries openrouter eio_main yojson))
+
+(executable
+ (name list_models)
+ (libraries openrouter eio_main))
