@@ -94,26 +94,27 @@
 - [ ] Tests for guardrails API
 - [x] Tests for new chat features
 - [ ] Tests for error types
-- [ ] Tests for pipeline builder
+- [x] Tests for pipeline builder
 
 ---
 
 ## OCaml-Idiomatic Enhancements
 
 ### Composable Pipelines (Priority 1)
-- [ ] Pipeline builder module with `|>` composition
-- [ ] `Chat.prompt` - Start a pipeline from a string
-- [ ] `Chat.system` - Add system message to pipeline
-- [ ] `Chat.user` - Add user message to pipeline
-- [ ] `Chat.assistant` - Add assistant message to pipeline
-- [ ] `Chat.model` - Set model
-- [ ] `Chat.temperature` - Set temperature
-- [ ] `Chat.max_tokens` - Set max tokens
-- [ ] `Chat.tools` - Add tools
-- [ ] `Chat.json_mode` - Enable JSON response format
-- [ ] `Chat.json_schema` - Set JSON schema constraint
-- [ ] `Chat.run` - Execute pipeline (non-streaming)
-- [ ] `Chat.run_stream` - Execute pipeline (streaming)
+- [x] Pipeline builder module with `|>` composition
+- [x] `Pipeline.prompt` - Start a pipeline from a string
+- [x] `Pipeline.system` - Add system message to pipeline
+- [x] `Pipeline.user` - Add user message to pipeline
+- [x] `Pipeline.assistant` - Add assistant message to pipeline
+- [x] `Pipeline.model` - Set model
+- [x] `Pipeline.temperature` - Set temperature
+- [x] `Pipeline.max_tokens` - Set max tokens
+- [x] `Pipeline.tools` - Add tools
+- [x] `Pipeline.json_mode` - Enable JSON response format
+- [x] `Pipeline.json_schema` - Set JSON schema constraint
+- [x] `Pipeline.run` - Execute pipeline (non-streaming)
+- [x] `Pipeline.run_stream` - Execute pipeline (streaming)
+- [x] Additional helpers: `top_p`, `top_k`, `stop`, `frequency_penalty`, `presence_penalty`, `seed`, `logit_bias`, `logprobs`, `session_id`, `metadata`, `modalities`, `reasoning`, `provider`, `route`, `tool_choice`, `force_tool`
 
 ### Typed Tool System (Priority 2)
 - [ ] Tool definition as OCaml types

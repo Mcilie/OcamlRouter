@@ -25,3 +25,7 @@
 (executable
  (name test_chat_features)
  (libraries openrouter eio_main yojson))
+
+(executable
+ (name test_pipeline)
+ (libraries openrouter eio_main yojson))

@@ -195,7 +195,7 @@ let tool_choice choice t =
 
 (** Force a specific tool to be called *)
 let force_tool name t =
-  { t with tool_choice = Some (Tool.Specific { tool_type = "function"; function_name = name }) }
+  { t with tool_choice = Some (Tool.Function_choice name) }
 
 (** {1 Reasoning} *)
 

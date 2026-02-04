@@ -13,3 +13,7 @@
 (executable
  (name list_models)
  (libraries openrouter eio_main))
+
+(executable
+ (name pipeline_demo)
+ (libraries openrouter eio_main yojson))
