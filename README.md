@@ -232,13 +232,28 @@ dune exec examples/pipeline_demo.exe
 
 ### Important: ulimit on macOS
 
-Eio requires a reasonable file descriptor limit. Before running:
+Eio's `iomux` backend fails with a cryptic error when the file descriptor limit is set too high (e.g., `unlimited`):
+
+```
+Bigarray.create: negative dimension
+```
+
+This happens because Eio tries to allocate an array sized to the fd limit, and `unlimited` overflows.
+
+**Fix:** Set a reasonable limit before running:
 
 ```bash
 ulimit -n 10240
 ```
 
-The library includes a runtime check (`Openrouter.Env_check.check_ulimit ()`) that warns if the limit is problematic.
+Or add it to your shell profile. The library includes a runtime check you can call at startup:
+
+```ocaml
+let () =
+  match Openrouter.Env_check.check_ulimit () with
+  | Ok _ -> ()
+  | Error msg -> prerr_endline msg; exit 1
+```
 
 ## Dependencies
 
