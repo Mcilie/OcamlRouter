@@ -126,26 +126,57 @@ conversation
 |> run ~sw ~env client
 ```
 
-### Tool Use
+### Tool Use (Typed)
+
+The `Typed_tool` module provides type-safe tool definitions with schema builders and pattern matching:
 
 ```ocaml
-let weather_tool = Openrouter.Tool.make_function
-  ~description:"Get current weather"
-  ~parameters:(`Assoc [
-    ("type", `String "object");
-    ("properties", `Assoc [
-      ("location", `Assoc [("type", `String "string")])
-    ]);
-    ("required", `List [`String "location"]);
-  ])
-  "get_weather"
-in
+open Openrouter.Typed_tool
 
+(* Define param type *)
+type weather_params = { location : string; unit : string }
+
+(* Create typed tool with schema builder *)
+let weather_tool =
+  create
+    ~name:"get_weather"
+    ~description:"Get current weather"
+    ~schema:Schema.(obj ~required:["location"; "unit"] [
+      ("location", string_desc "City name");
+      ("unit", enum ["celsius"; "fahrenheit"]);
+    ])
+    ~parse:(fun json ->
+      let open Yojson.Safe.Util in
+      { location = json |> member "location" |> to_string;
+        unit = json |> member "unit" |> to_string })
+    ()
+
+(* Use in request *)
 "What's the weather in Tokyo?"
 |> prompt
 |> model "openai/gpt-5"
-|> tools [weather_tool]
+|> tools [to_tool weather_tool]
 |> run ~sw ~env client
+
+(* Pattern match on tool calls *)
+match Openrouter.Chat.get_tool_calls response with
+| Some [call] when matches weather_tool call ->
+  let params = parse_call_exn weather_tool call in
+  Printf.printf "Weather for %s in %s\n" params.location params.unit
+| _ -> ()
+```
+
+For multiple tools, use `Toolset` for automatic dispatch:
+
+```ocaml
+let toolset = Toolset.(
+  empty
+  |> add weather_tool (fun p -> get_weather p.location p.unit)
+  |> add search_tool (fun p -> search p.query)
+)
+
+(* Handle all tool calls and get response messages *)
+let response_msgs = Toolset.handle_all toolset tool_calls
 ```
 
 ## API Coverage

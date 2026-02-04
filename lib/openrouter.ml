@@ -46,6 +46,7 @@ module Reasoning = Reasoning
 module Provider = Provider
 module Streaming = Streaming
 module Pipeline = Pipeline
+module Typed_tool = Typed_tool
 
 module Chat = struct
   include Chat

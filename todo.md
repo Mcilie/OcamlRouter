@@ -95,6 +95,7 @@
 - [x] Tests for new chat features
 - [ ] Tests for error types
 - [x] Tests for pipeline builder
+- [x] Tests for typed tool system
 
 ---
 
@@ -117,10 +118,13 @@
 - [x] Additional helpers: `top_p`, `top_k`, `stop`, `frequency_penalty`, `presence_penalty`, `seed`, `logit_bias`, `logprobs`, `session_id`, `metadata`, `modalities`, `reasoning`, `provider`, `route`, `tool_choice`, `force_tool`
 
 ### Typed Tool System (Priority 2)
-- [ ] Tool definition as OCaml types
-- [ ] Auto-generate JSON schema from types
-- [ ] Pattern matching on tool responses
-- [ ] Compile-time handler coverage checks (GADTs)
+- [x] Tool definition as OCaml types
+- [x] Schema builder helpers (`Typed_tool.Schema` module)
+- [x] Pattern matching on tool responses (`matches`, `parse_call`, `parse_call_exn`)
+- [x] Toolset for runtime dispatch (`Typed_tool.Toolset`)
+- [x] Auto-generate response messages (`Toolset.handle_all`)
+- [ ] PPX for auto-generating schema from types (future enhancement)
+- [ ] Compile-time handler coverage checks with GADTs (future enhancement)
 
 ### Agent Framework (Priority 3)
 - [ ] Agent loop with automatic tool execution

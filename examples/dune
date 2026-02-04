@@ -17,3 +17,7 @@
 (executable
  (name pipeline_demo)
  (libraries openrouter eio_main yojson))
+
+(executable
+ (name typed_tools_demo)
+ (libraries openrouter eio_main yojson))
