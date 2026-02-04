@@ -18,7 +18,7 @@ let () =
 
   (* Send streaming request *)
   match Openrouter.Chat.send_streaming ~sw ~env client
-    ~model:"openai/gpt-4o-mini"
+    ~model:"openai/gpt-5"
     ~messages
     ()
   with

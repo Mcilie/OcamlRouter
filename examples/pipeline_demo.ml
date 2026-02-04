@@ -24,7 +24,7 @@ let () =
   let result =
     "What is the meaning of life? One sentence only."
     |> prompt
-    |> model "openai/gpt-4o-mini"
+    |> model "openai/gpt-5"
     |> max_tokens 50
     |> run ~sw ~env client
   in
@@ -38,7 +38,7 @@ let () =
     "Write a haiku about programming"
     |> prompt
     |> system "You are a creative poet who loves technology."
-    |> model "openai/gpt-4o-mini"
+    |> model "openai/gpt-5"
     |> temperature 0.9
     |> max_tokens 100
     |> run ~sw ~env client
@@ -62,7 +62,7 @@ let () =
   let result =
     "Generate a fictional person"
     |> prompt
-    |> model "openai/gpt-4o-mini"
+    |> model "openai/gpt-5"
     |> json_mode ~name:"person" ~strict:true person_schema
     |> run ~sw ~env client
   in
@@ -76,7 +76,7 @@ let () =
   let result =
     "Count slowly from 1 to 10, with a brief pause between each number."
     |> prompt
-    |> model "openai/gpt-4o-mini"
+    |> model "openai/gpt-5"
     |> max_tokens 100
     |> run_stream ~sw ~env client
   in
@@ -102,7 +102,7 @@ let () =
   let result =
     conversation
     |> messages
-    |> model "openai/gpt-4o-mini"
+    |> model "openai/gpt-5"
     |> max_tokens 100
     |> run ~sw ~env client
   in

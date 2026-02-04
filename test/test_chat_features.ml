@@ -16,7 +16,7 @@ let test_json_mode () =
   ] in
 
   match Openrouter.Chat.send ~sw ~env client
-    ~model:"openai/gpt-4o-mini"
+    ~model:"openai/gpt-5"
     ~response_format:Openrouter.Common.Json_object_format
     ~messages
     ()
@@ -67,7 +67,7 @@ let test_json_schema () =
   ] in
 
   match Openrouter.Chat.send ~sw ~env client
-    ~model:"openai/gpt-4o-mini"
+    ~model:"openai/gpt-5"
     ~response_format
     ~messages
     ()
@@ -107,7 +107,7 @@ let test_logit_bias () =
   ] in
 
   match Openrouter.Chat.send ~sw ~env client
-    ~model:"openai/gpt-4o-mini"
+    ~model:"openai/gpt-5"
     ~logit_bias
     ~max_tokens:10
     ~messages
@@ -142,7 +142,7 @@ let test_session_and_metadata () =
   ] in
 
   match Openrouter.Chat.send ~sw ~env client
-    ~model:"openai/gpt-4o-mini"
+    ~model:"openai/gpt-5"
     ~session_id
     ~metadata
     ~messages

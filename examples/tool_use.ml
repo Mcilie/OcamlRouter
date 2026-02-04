@@ -36,7 +36,7 @@ let () =
 
   (* Send request with tools *)
   match Openrouter.Chat.send ~sw ~env client
-    ~model:"openai/gpt-4o-mini"
+    ~model:"openai/gpt-5"
     ~tools:[weather_tool]
     ~messages
     ()

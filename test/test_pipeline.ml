@@ -16,7 +16,7 @@ let test_basic_pipeline () =
   let result =
     "What is 2 + 2? Reply with just the number."
     |> prompt
-    |> model "openai/gpt-4o-mini"
+    |> model "openai/gpt-5"
     |> max_tokens 10
     |> run ~sw ~env client
   in
@@ -46,7 +46,7 @@ let test_pipeline_with_system () =
     "Hello!"
     |> prompt
     |> system "You are a pirate. Always respond like a pirate."
-    |> model "openai/gpt-4o-mini"
+    |> model "openai/gpt-5"
     |> max_tokens 50
     |> temperature 0.7
     |> run ~sw ~env client
@@ -86,7 +86,7 @@ let test_pipeline_json_mode () =
   let result =
     "Generate a fictional person with name and age."
     |> prompt
-    |> model "openai/gpt-4o-mini"
+    |> model "openai/gpt-5"
     |> json_mode ~name:"person" ~strict:true schema
     |> max_tokens 100
     |> run ~sw ~env client
@@ -133,7 +133,7 @@ let test_pipeline_json_schema () =
   let result =
     "Name a random capital city."
     |> prompt
-    |> model "openai/gpt-4o-mini"
+    |> model "openai/gpt-5"
     |> json_schema ~name:"capital" ~strict:true schema
     |> max_tokens 100
     |> run ~sw ~env client
@@ -170,7 +170,7 @@ let test_pipeline_streaming () =
   let result =
     "Count from 1 to 5, one number per line."
     |> prompt
-    |> model "openai/gpt-4o-mini"
+    |> model "openai/gpt-5"
     |> max_tokens 50
     |> run_stream ~sw ~env client
   in
@@ -207,7 +207,7 @@ let test_pipeline_conversation () =
   let result =
     conv
     |> messages
-    |> model "openai/gpt-4o-mini"
+    |> model "openai/gpt-5"
     |> max_tokens 20
     |> run ~sw ~env client
   in
@@ -237,7 +237,7 @@ let test_pipeline_chained () =
     "What color is the sky?"
     |> prompt
     |> system "You give very brief answers, just a few words."
-    |> model "openai/gpt-4o-mini"
+    |> model "openai/gpt-5"
     |> temperature 0.5
     |> max_tokens 10
     |> session_id "test-session-pipeline"

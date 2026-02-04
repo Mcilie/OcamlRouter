@@ -38,7 +38,7 @@ let test_get_generation () =
 
   (* First make a chat request to get a generation ID *)
   let messages = [Openrouter.Message.user "Say 'test' and nothing else."] in
-  match Openrouter.Chat.send ~sw ~env client ~model:"openai/gpt-4o-mini" ~messages () with
+  match Openrouter.Chat.send ~sw ~env client ~model:"openai/gpt-5" ~messages () with
   | Ok response ->
     let gen_id = response.id in
     Printf.printf "Got generation ID: %s\n" gen_id;

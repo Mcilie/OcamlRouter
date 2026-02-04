@@ -37,7 +37,7 @@ let () =
 
   let result =
     Openrouter.Chat.send ~sw ~env client
-      ~model:"openai/gpt-4o-mini"
+      ~model:"openai/gpt-5"
       ~messages:[Openrouter.Message.user "Hello!"]
       ()
   in
@@ -68,7 +68,7 @@ let result =
   "Explain monads in simple terms"
   |> prompt
   |> system "You are a friendly teacher. Be concise."
-  |> model "anthropic/claude-3.5-sonnet"
+  |> model "anthropic/claude-4.5-sonnet"
   |> temperature 0.7
   |> max_tokens 200
   |> run ~sw ~env client
@@ -89,7 +89,7 @@ let person_schema = `Assoc [
 
 "Generate a fictional person"
 |> prompt
-|> model "openai/gpt-4o-mini"
+|> model "openai/gpt-5"
 |> json_mode ~name:"person" ~strict:true person_schema
 |> run ~sw ~env client
 (* Returns: {"name": "Alice", "age": 28} *)
@@ -100,7 +100,7 @@ let person_schema = `Assoc [
 ```ocaml
 "Write a short story"
 |> prompt
-|> model "openai/gpt-4o-mini"
+|> model "openai/gpt-5"
 |> run_stream ~sw ~env client
 |> Result.map (fun stream ->
      Openrouter.Chat.iter_stream (fun chunk ->
@@ -122,7 +122,7 @@ let conversation = [
 
 conversation
 |> messages
-|> model "openai/gpt-4o-mini"
+|> model "openai/gpt-5"
 |> run ~sw ~env client
 ```
 
@@ -143,7 +143,7 @@ in
 
 "What's the weather in Tokyo?"
 |> prompt
-|> model "openai/gpt-4o-mini"
+|> model "openai/gpt-5"
 |> tools [weather_tool]
 |> run ~sw ~env client
 ```

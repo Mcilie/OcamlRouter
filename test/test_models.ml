@@ -61,13 +61,13 @@ let test_find_by_id () =
   | Ok response ->
     let models = response.data in
 
-    (* Find GPT-4o-mini which should exist *)
-    (match Openrouter.Models.find_by_id models "openai/gpt-4o-mini" with
+    (* Find gpt-5 which should exist *)
+    (match Openrouter.Models.find_by_id models "openai/gpt-5" with
      | Some model ->
        Printf.printf "Found model: %s\n" model.name;
        print_endline "test_find_by_id: PASSED"
      | None ->
-       print_endline "openai/gpt-4o-mini not found, trying another model";
+       print_endline "openai/gpt-5 not found, trying another model";
        (* Just check that find works with first model *)
        let first = List.hd models in
        match Openrouter.Models.find_by_id models first.id with

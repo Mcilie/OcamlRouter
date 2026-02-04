@@ -10,7 +10,7 @@
       let result =
         "What is the capital of France?"
         |> prompt
-        |> model "openai/gpt-4o-mini"
+        |> model "openai/gpt-5"
         |> temperature 0.7
         |> run ~sw ~env client
     ]}

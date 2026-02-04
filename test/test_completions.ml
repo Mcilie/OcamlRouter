@@ -13,7 +13,7 @@ let test_generate_completion () =
   let prompt = Openrouter.Completions.String "Once upon a time" in
 
   match Openrouter.Completions.generate ~sw ~env client
-    ~model:"openai/gpt-4o-mini"
+    ~model:"openai/gpt-5"
     ~max_tokens:50
     ~prompt
     ()
