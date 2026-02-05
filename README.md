@@ -179,6 +179,34 @@ let toolset = Toolset.(
 let response_msgs = Toolset.handle_all toolset tool_calls
 ```
 
+### Agent Framework (Decision as Tool Call)
+
+Use a router tool to drive match-case branching, plus an auto-tool loop for execution:
+
+```ocaml
+open Openrouter.Agent
+
+type decision = Weather of string | Search of string
+
+let decision_tool = Decision.tool ~actions:["weather"; "search"] ()
+
+let decode action args =
+  let open Yojson.Safe.Util in
+  match action with
+  | "weather" -> Ok (Weather (args |> member "location" |> to_string))
+  | "search" -> Ok (Search (args |> member "query" |> to_string))
+  | other -> Error ("Unknown action: " ^ other)
+
+(* After Chat.send with the decision tool ... *)
+match Decision.parse_tool_calls decision_tool tool_calls with
+| Ok d ->
+  (match Decision.decode decode d with
+   | Ok (Weather loc) -> (* run Auto.run with tools *)
+   | Ok (Search q) -> (* run Auto.run with tools *)
+   | Error _ -> ())
+| Error _ -> ()
+```
+
 ## API Coverage
 
 ### Chat Completions

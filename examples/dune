@@ -21,3 +21,7 @@
 (executable
  (name typed_tools_demo)
  (libraries openrouter eio_main yojson))
+
+(executable
+ (name agent_decision)
+ (libraries openrouter eio_main yojson))

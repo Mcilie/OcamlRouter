@@ -47,6 +47,7 @@ module Provider = Provider
 module Streaming = Streaming
 module Pipeline = Pipeline
 module Typed_tool = Typed_tool
+module Agent = Agent
 
 module Chat = struct
   include Chat
