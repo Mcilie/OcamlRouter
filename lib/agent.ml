@@ -3,9 +3,9 @@
 module Context = struct
   type t = {
     sw : Eio.Switch.t;
-    env : Eio.Stdenv.t;
+    env : Eio_unix.Stdenv.base;
     client : Client.t;
-    clock : Eio.Time.clock;
+    clock : float Eio.Time.clock_ty Eio.Resource.t;
   }
 
   let make ~sw ~env ~client =
@@ -113,7 +113,7 @@ module Decision = struct
     in
     Typed_tool.create ~name ~schema ~parse ~strict ()
 
-  let parse_tool_calls (tool : t Typed_tool.t) calls =
+  let parse_tool_calls (tool : t Typed_tool.t) (calls : Tool.tool_call list) =
     match calls with
     | [] -> Error No_call
     | _ :: _ :: _ -> Error Multiple_calls
@@ -138,7 +138,7 @@ end
 module Tools = struct
   type tool_error = { tool : string; message : string }
 
-  type 'ctx handler =
+  type ('ctx,'params) handler =
     'ctx -> 'params -> (string, tool_error) result
 
   type 'ctx handler_fn =
@@ -151,9 +151,9 @@ module Tools = struct
 
   let empty = { tools = []; handlers = [] }
 
-  let add (typed_tool : 'params Typed_tool.t) (handle : 'ctx handler) (ts : 'ctx t) =
+  let add (typed_tool : 'params Typed_tool.t) (handle : ('ctx,'params) handler) (ts : 'ctx t) =
     let raw_tool = Typed_tool.to_tool typed_tool in
-    let handler ctx call =
+    let handler ctx (call : Tool.tool_call) =
       if Typed_tool.matches typed_tool call then
         match Typed_tool.parse_call typed_tool call with
         | Some params -> Some (handle ctx params)
@@ -177,7 +177,7 @@ module Tools = struct
     error_to_string = (fun e -> e.message);
   }
 
-  let handle_all ?(policy = default_policy) ts ctx calls =
+  let handle_all ?(policy = default_policy) ts ctx (calls : Tool.tool_call list) =
     let rec try_handlers call = function
       | [] -> None
       | h :: rest ->
@@ -190,8 +190,8 @@ module Tools = struct
       | call :: rest ->
           (match try_handlers call ts.handlers with
            | None ->
-               let err = { tool = call.function_.name; message = "unhandled tool: " ^ call.function_.name } in
-               (match policy.on_unhandled with
+              let err = { tool = call.function_.name; message = "unhandled tool: " ^ call.function_.name } in
+              (match policy.on_unhandled with
                 | `Ignore -> loop acc rest
                 | `Message ->
                     let msg = Message.tool ~tool_call_id:call.id (policy.error_to_string err) in
@@ -217,13 +217,13 @@ module Loop = struct
     | Fail of 'e Error.t
 
   let run ~ctx ~budget ~step ~init =
-    let start = Eio.Time.now ctx.clock in
+    let start = Eio.Time.now ctx.Context.clock in
     let rec loop steps state =
-      if steps >= budget.max_steps then
+      if steps >= budget.Budget.max_steps then
         Error (Error.Framework (Error.Budget_exhausted `Steps))
       else
-        match budget.max_elapsed_s with
-        | Some max_elapsed when (Eio.Time.now ctx.clock -. start) > max_elapsed ->
+        match budget.Budget.max_elapsed_s with
+        | Some max_elapsed when (Eio.Time.now ctx.Context.clock -. start) > max_elapsed ->
             Error (Error.Framework (Error.Budget_exhausted `Elapsed))
         | _ ->
             (match step state with
@@ -251,21 +251,21 @@ module Auto = struct
     | [] -> None
     | choice :: _ -> Some choice.message
 
-  let run ~ctx ~budget ?(policy = Tools.default_policy) ?model_call ~tools ~model ~messages =
-    let start = Eio.Time.now ctx.clock in
+  let run ~(ctx:Context.t) ~budget ~tools ~model ~messages ?(policy = Tools.default_policy) ?model_call () =
+    let start = Eio.Time.now ctx.Context.clock in
     let tools_list = Tools.to_tools tools in
     let default_model_call ~ctx ~tools ~messages =
       let tools_opt = if tools = [] then None else Some tools in
-      Chat.send ~sw:ctx.sw ~env:ctx.env ctx.client
+      Api_chat.send ~sw:ctx.Context.sw ~env:ctx.Context.env ctx.Context.client
         ~model ?tools:tools_opt ~messages ()
     in
     let call_model = Option.value model_call ~default:default_model_call in
     let rec loop steps tool_rounds total_tool_calls messages =
-      if steps >= budget.max_steps then
+      if steps >= budget.Budget.max_steps then
         Error (Error.Budget_exhausted `Steps)
       else
-        match budget.max_elapsed_s with
-        | Some max_elapsed when (Eio.Time.now ctx.clock -. start) > max_elapsed ->
+        match budget.Budget.max_elapsed_s with
+        | Some max_elapsed when (Eio.Time.now ctx.Context.clock -. start) > max_elapsed ->
             Error (Error.Budget_exhausted `Elapsed)
         | _ ->
             match call_model ~ctx ~tools:tools_list ~messages with
@@ -278,11 +278,11 @@ module Auto = struct
                      (match observation with
                       | Observation.Tool_calls calls
                       | Observation.Content_and_tool_calls (_, calls) ->
-                          if tool_rounds + 1 > budget.max_tool_rounds then
+                          if tool_rounds + 1 > budget.Budget.max_tool_rounds then
                             Error (Error.Budget_exhausted `Tool_rounds)
                           else
                             let call_count = List.length calls in
-                            if total_tool_calls + call_count > budget.max_total_tool_calls then
+                            if total_tool_calls + call_count > budget.Budget.max_total_tool_calls then
                               Error (Error.Budget_exhausted `Tool_calls)
                             else
                               (match Tools.handle_all ~policy tools ctx calls with
@@ -296,7 +296,7 @@ module Auto = struct
                                    else Error (Error.Tool_handler err.message))
                       | _ ->
                           let messages = messages @ [msg] in
-                          Ok { response; messages })))
+                          Ok { response; messages }))
     in
     loop 0 0 0 messages
 end

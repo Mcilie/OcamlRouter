@@ -3,12 +3,12 @@
 module Context : sig
   type t = {
     sw : Eio.Switch.t;
-    env : Eio.Stdenv.t;
+    env : Eio_unix.Stdenv.base;
     client : Client.t;
-    clock : Eio.Time.clock;
+    clock : float Eio.Time.clock_ty Eio.Resource.t;
   }
 
-  val make : sw:Eio.Switch.t -> env:Eio.Stdenv.t -> client:Client.t -> t
+  val make : sw:Eio.Switch.t -> env:Eio_unix.Stdenv.base -> client:Client.t -> t
 end
 
 module Budget : sig
@@ -76,7 +76,7 @@ end
 module Tools : sig
   type tool_error = { tool : string; message : string }
 
-  type 'ctx handler =
+  type ('ctx,'params) handler =
     'ctx -> 'params -> (string, tool_error) result
 
   type 'ctx t
@@ -85,7 +85,7 @@ module Tools : sig
 
   val add :
     'params Typed_tool.t ->
-    'ctx handler ->
+    ('ctx,'params) handler ->
     'ctx t -> 'ctx t
 
   val to_tools : 'ctx t -> Tool.tool list
@@ -133,10 +133,11 @@ module Auto : sig
   val run :
     ctx:Context.t ->
     budget:Budget.t ->
-    ?policy:Tools.policy ->
-    ?model_call:model_call ->
-    tools:'ctx Tools.t ->
+    tools:Context.t Tools.t ->
     model:string ->
     messages:Message.t list ->
-    (result, Error.framework) result
+    ?policy:Tools.policy ->
+    ?model_call:model_call ->
+    unit ->
+    (result, Error.framework) Stdlib.result
 end

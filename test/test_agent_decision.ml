@@ -106,8 +106,8 @@ let test_auto_loop ctx =
     if !count = 1 then Ok resp1 else Ok resp2
   in
   let budget = { Budget.default with max_steps = 5; max_tool_rounds = 2; max_total_tool_calls = 5 } in
-  match Auto.run ~ctx ~budget ~model_call ~tools:toolset ~model:"test"
-          ~messages:[Message.user "hi"] with
+  match Auto.run ~ctx ~budget ~policy:Tools.default_policy ~model_call ~tools:toolset ~model:"test"
+          ~messages:[Message.user "hi"] () with
   | Ok { messages; _ } ->
       assert_true (List.length messages = 4) "auto loop conversation length"
   | Error _ -> assert_true false "auto loop should succeed"

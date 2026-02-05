@@ -114,7 +114,7 @@ let () =
                        Message.system "Use tools to answer the user question.";
                        Message.user prompt;
                      ] in
-                     match Auto.run ~ctx ~budget:Budget.default ~tools:toolset ~model ~messages with
+                     match Auto.run ~ctx ~budget:Budget.default ~tools:toolset ~model ~messages () with
                      | Error _ ->
                          print_endline "Auto tool loop failed."
                      | Ok { response; _ } ->
