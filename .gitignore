@@ -2,3 +2,4 @@
 python-sdk/
 .claude/
 _build/
+.DS_Store

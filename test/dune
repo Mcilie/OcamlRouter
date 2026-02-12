@@ -33,3 +33,7 @@
 (executable
  (name test_typed_tool)
  (libraries openrouter eio_main yojson))
+
+(executable
+ (name test_agent_decision)
+ (libraries openrouter eio_main yojson))
